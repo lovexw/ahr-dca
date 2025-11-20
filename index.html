@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin AHR999 Investment Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #0f0f0f 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #f7931a 0%, #ff6b00 100%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(247, 147, 26, 0.3);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .current-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(247, 147, 26, 0.2);
+        }
+        
+        .stat-card h2 {
+            font-size: 1rem;
+            color: #f7931a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .signal {
+            font-size: 1.1rem;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .investment-card {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(247, 147, 26, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .investment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(247, 147, 26, 0.4);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(247, 147, 26, 0.3);
+        }
+        
+        .card-header h3 {
+            font-size: 1.5rem;
+            color: #f7931a;
+        }
+        
+        .threshold-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .card-stats {
+            margin-bottom: 25px;
+        }
+        
+        .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            display: block;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+        
+        .purchases-section {
+            margin-top: 20px;
+        }
+        
+        .purchases-section h4 {
+            color: #f7931a;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .purchases-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .purchases-table th,
+        .purchases-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(247, 147, 26, 0.1);
+        }
+        
+        .purchases-table th {
+            background: rgba(247, 147, 26, 0.2);
+            color: #f7931a;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        
+        .purchases-table tr:hover {
+            background: rgba(247, 147, 26, 0.1);
+        }
+        
+        .no-purchases {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            border-top: 1px solid rgba(247, 147, 26, 0.2);
+            margin-top: 40px;
+        }
+        
+        .last-updated {
+            font-size: 0.9rem;
+            color: #f7931a;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .investment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>₿ Bitcoin AHR999 Dashboard</h1>
+            <p class="subtitle">Systematic Investment Strategy Based on AHR999 Index</p>
+        </header>
+        
+        <div class="current-stats">
+            <div class="stat-card">
+                <h2>Current BTC Price</h2>
+                <div class="value">$89,330.00</div>
+            </div>
+            
+            <div class="stat-card">
+                <h2>AHR999 Index</h2>
+                <div class="value" style="color: #7cfc00">
+                    0.54
+                </div>
+                <div class="signal">🟢 Good Buy Zone</div>
+            </div>
+            
+            <div class="stat-card">
+                <h2>Strategy Start Date</h2>
+                <div class="value" style="font-size: 2rem;">2025-10-06</div>
+                <div class="signal">$100 USD per buy signal</div>
+            </div>
+        </div>
+        
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem; color: #f7931a;">
+            Investment Performance by Threshold
+        </h2>
+        
+        <div class="investment-grid">
+            
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 1.0</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #ffd700, #ffd70088);">
+                    Threshold: 1.0
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">40</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$4,000.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.03784441</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$3,380.64</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$-619.36</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">-15.48%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchases-section">
+                <h4>Recent Purchases (Last 10)</h4>
+                <div class="table-wrapper">
+                    <table class="purchases-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>BTC Price</th>
+                                <th>BTC Bought</th>
+                                <th>USD Invested</th>
+                                <th>AHR999</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                <tr>
+                    <td>2025-11-20</td>
+                    <td>$89,330.00</td>
+                    <td>0.00111944 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5445</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-19</td>
+                    <td>$93,331.00</td>
+                    <td>0.00107146 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5948</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-18</td>
+                    <td>$93,717.00</td>
+                    <td>0.00106704 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6002</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-17</td>
+                    <td>$94,298.00</td>
+                    <td>0.00106047 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6081</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-16</td>
+                    <td>$95,871.00</td>
+                    <td>0.00104307 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6292</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-15</td>
+                    <td>$96,971.00</td>
+                    <td>0.00103124 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6443</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-14</td>
+                    <td>$100,494.00</td>
+                    <td>0.00099508 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6928</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-13</td>
+                    <td>$101,442.00</td>
+                    <td>0.00098578 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7068</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-12</td>
+                    <td>$103,494.00</td>
+                    <td>0.00096624 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7366</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-11</td>
+                    <td>$105,334.00</td>
+                    <td>0.00094936 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7640</td>
+                </tr>
+                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 0.9</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #ffd700, #ffd70088);">
+                    Threshold: 0.9
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">32</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$3,200.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.03082154</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$2,753.29</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$-446.71</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">-13.96%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchases-section">
+                <h4>Recent Purchases (Last 10)</h4>
+                <div class="table-wrapper">
+                    <table class="purchases-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>BTC Price</th>
+                                <th>BTC Bought</th>
+                                <th>USD Invested</th>
+                                <th>AHR999</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                <tr>
+                    <td>2025-11-20</td>
+                    <td>$89,330.00</td>
+                    <td>0.00111944 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5445</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-19</td>
+                    <td>$93,331.00</td>
+                    <td>0.00107146 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5948</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-18</td>
+                    <td>$93,717.00</td>
+                    <td>0.00106704 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6002</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-17</td>
+                    <td>$94,298.00</td>
+                    <td>0.00106047 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6081</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-16</td>
+                    <td>$95,871.00</td>
+                    <td>0.00104307 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6292</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-15</td>
+                    <td>$96,971.00</td>
+                    <td>0.00103124 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6443</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-14</td>
+                    <td>$100,494.00</td>
+                    <td>0.00099508 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6928</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-13</td>
+                    <td>$101,442.00</td>
+                    <td>0.00098578 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7068</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-12</td>
+                    <td>$103,494.00</td>
+                    <td>0.00096624 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7366</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-11</td>
+                    <td>$105,334.00</td>
+                    <td>0.00094936 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7640</td>
+                </tr>
+                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 0.8</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #ffd700, #ffd70088);">
+                    Threshold: 0.8
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">17</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$1,700.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.01710030</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$1,527.57</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$-172.43</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">-10.14%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchases-section">
+                <h4>Recent Purchases (Last 10)</h4>
+                <div class="table-wrapper">
+                    <table class="purchases-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>BTC Price</th>
+                                <th>BTC Bought</th>
+                                <th>USD Invested</th>
+                                <th>AHR999</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                <tr>
+                    <td>2025-11-20</td>
+                    <td>$89,330.00</td>
+                    <td>0.00111944 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5445</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-19</td>
+                    <td>$93,331.00</td>
+                    <td>0.00107146 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5948</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-18</td>
+                    <td>$93,717.00</td>
+                    <td>0.00106704 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6002</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-17</td>
+                    <td>$94,298.00</td>
+                    <td>0.00106047 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6081</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-16</td>
+                    <td>$95,871.00</td>
+                    <td>0.00104307 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6292</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-15</td>
+                    <td>$96,971.00</td>
+                    <td>0.00103124 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6443</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-14</td>
+                    <td>$100,494.00</td>
+                    <td>0.00099508 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6928</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-13</td>
+                    <td>$101,442.00</td>
+                    <td>0.00098578 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7068</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-12</td>
+                    <td>$103,494.00</td>
+                    <td>0.00096624 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7366</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-11</td>
+                    <td>$105,334.00</td>
+                    <td>0.00094936 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.7640</td>
+                </tr>
+                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 0.7</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #7cfc00, #7cfc0088);">
+                    Threshold: 0.7
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">7</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$700.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.00738780</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$659.95</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$-40.05</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">-5.72%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchases-section">
+                <h4>Recent Purchases (Last 10)</h4>
+                <div class="table-wrapper">
+                    <table class="purchases-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>BTC Price</th>
+                                <th>BTC Bought</th>
+                                <th>USD Invested</th>
+                                <th>AHR999</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                <tr>
+                    <td>2025-11-20</td>
+                    <td>$89,330.00</td>
+                    <td>0.00111944 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5445</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-19</td>
+                    <td>$93,331.00</td>
+                    <td>0.00107146 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5948</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-18</td>
+                    <td>$93,717.00</td>
+                    <td>0.00106704 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6002</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-17</td>
+                    <td>$94,298.00</td>
+                    <td>0.00106047 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6081</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-16</td>
+                    <td>$95,871.00</td>
+                    <td>0.00104307 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6292</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-15</td>
+                    <td>$96,971.00</td>
+                    <td>0.00103124 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6443</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-14</td>
+                    <td>$100,494.00</td>
+                    <td>0.00099508 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.6928</td>
+                </tr>
+                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 0.6</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #7cfc00, #7cfc0088);">
+                    Threshold: 0.6
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">2</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$200.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.00219090</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$195.71</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$-4.29</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">-2.14%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchases-section">
+                <h4>Recent Purchases (Last 10)</h4>
+                <div class="table-wrapper">
+                    <table class="purchases-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>BTC Price</th>
+                                <th>BTC Bought</th>
+                                <th>USD Invested</th>
+                                <th>AHR999</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                <tr>
+                    <td>2025-11-20</td>
+                    <td>$89,330.00</td>
+                    <td>0.00111944 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5445</td>
+                </tr>
+                
+                <tr>
+                    <td>2025-11-19</td>
+                    <td>$93,331.00</td>
+                    <td>0.00107146 BTC</td>
+                    <td>$100.00</td>
+                    <td>0.5948</td>
+                </tr>
+                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 0.5</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #7cfc00, #7cfc0088);">
+                    Threshold: 0.5
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$0.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.00000000</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$0.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$0.00</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">0.00%</span>
+                    </div>
+                </div>
+            </div>
+            <p class="no-purchases">No purchases yet at this threshold.</p>
+        </div>
+        
+        <div class="investment-card">
+            <div class="card-header">
+                <h3>AHR999 ≤ 0.4</h3>
+                <span class="threshold-badge" style="background: linear-gradient(135deg, #00ff00, #00ff0088);">
+                    Threshold: 0.4
+                </span>
+            </div>
+            <div class="card-stats">
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-value">$0.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-value">0.00000000</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current Value</span>
+                        <span class="stat-value">$0.00</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-value" style="color: #ff4500">$0.00</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">ROI</span>
+                        <span class="stat-value" style="color: #ff4500; font-size: 1.5rem; font-weight: bold;">0.00%</span>
+                    </div>
+                </div>
+            </div>
+            <p class="no-purchases">No purchases yet at this threshold.</p>
+        </div>
+        
+        </div>
+        
+        <footer>
+            <p class="last-updated">Last Updated: 2025-11-20 00:00:00</p>
+            <p style="margin-top: 10px;">
+                Data updates daily at 1:00 AM Beijing Time (UTC+8)
+            </p>
+            <p style="margin-top: 20px; font-size: 0.85rem;">
+                AHR999 is an investment indicator for Bitcoin. Values ≤ 0.45 indicate excellent buying opportunities,
+                while values > 1.5 suggest the price may be overvalued.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
