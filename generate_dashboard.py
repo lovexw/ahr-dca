@@ -17,17 +17,17 @@ def format_btc(num):
 def get_ahr999_color(ahr999):
     """Get color based on AHR999 value"""
     if ahr999 is None:
-        return '#666'
+        return '#666666'
     elif ahr999 <= 0.45:
-        return '#00ff00'  # Bright green - excellent buy
+        return '#2E7D32'  # Dark green - excellent buy
     elif ahr999 <= 0.7:
-        return '#7cfc00'  # Green - good buy
+        return '#43A047'  # Medium green - good buy
     elif ahr999 <= 1.0:
-        return '#ffd700'  # Gold - moderate buy
+        return '#FF9900'  # Orange - moderate buy
     elif ahr999 <= 1.5:
-        return '#ffa500'  # Orange - hold
+        return '#F57C00'  # Dark orange - hold
     else:
-        return '#ff4500'  # Red - expensive
+        return '#D32F2F'  # Dark red - expensive
 
 def get_ahr999_signal(ahr999):
     """Get investment signal based on AHR999 value"""
@@ -59,7 +59,7 @@ def generate_html(data):
     investment_cards = []
     for threshold in sorted([float(k) for k in summary.keys()], reverse=True):
         s = summary[str(threshold)]
-        roi_color = '#00ff00' if s['roi'] > 0 else '#ff4500'
+        roi_color = '#2E7D32' if s['roi'] > 0 else '#D32F2F'
         
         # Generate purchase history table
         purchases_html = ''
@@ -175,9 +175,9 @@ def generate_html(data):
             text-align: center;
             padding: 40px 20px;
             background: #FFFFFF;
-            border-radius: 20px;
+            border-radius: 16px;
             margin-bottom: 40px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 2px solid #FF9900;
         }}
         
@@ -202,8 +202,8 @@ def generate_html(data):
         .stat-card {{
             background: #FFFFFF;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid #E0E0E0;
         }}
         
@@ -229,7 +229,7 @@ def generate_html(data):
             background: #FFF6E5;
             border-radius: 8px;
             margin-top: 10px;
-            color: #222222;
+            color: #1A1A1A;
         }}
         
         .investment-grid {{
@@ -241,16 +241,16 @@ def generate_html(data):
         
         .investment-card {{
             background: #FFFFFF;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid #E0E0E0;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }}
         
         .investment-card:hover {{
-            transform: translateY(-5px);
-            box-shadow: 0 4px 16px rgba(255, 153, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(255, 153, 0, 0.12);
         }}
         
         .card-header {{
@@ -269,7 +269,7 @@ def generate_html(data):
         
         .threshold-badge {{
             padding: 8px 16px;
-            border-radius: 20px;
+            border-radius: 12px;
             font-size: 0.9rem;
             font-weight: bold;
         }}
@@ -288,7 +288,7 @@ def generate_html(data):
         .stat {{
             background: #FAFAFA;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid #E0E0E0;
         }}
         
@@ -321,7 +321,7 @@ def generate_html(data):
         
         .table-wrapper {{
             overflow-x: auto;
-            border-radius: 10px;
+            border-radius: 8px;
             background: #FAFAFA;
             border: 1px solid #E0E0E0;
         }}
@@ -348,7 +348,7 @@ def generate_html(data):
         }}
         
         .purchases-table td {{
-            color: #222222;
+            color: #1A1A1A;
         }}
         
         .purchases-table tr:hover {{
