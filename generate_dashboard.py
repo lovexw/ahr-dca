@@ -32,17 +32,17 @@ def get_ahr999_color(ahr999):
 def get_ahr999_signal(ahr999):
     """Get investment signal based on AHR999 value"""
     if ahr999 is None:
-        return 'N/A'
+        return '不适用'
     elif ahr999 <= 0.45:
-        return '🟢 Excellent Buy Zone'
+        return '🟢 极佳买入区'
     elif ahr999 <= 0.7:
-        return '🟢 Good Buy Zone'
+        return '🟢 良好买入区'
     elif ahr999 <= 1.0:
-        return '🟡 Moderate Buy'
+        return '🟡 适度买入'
     elif ahr999 <= 1.5:
-        return '🟠 Hold'
+        return '🟠 持有观望'
     else:
-        return '🔴 Overvalued'
+        return '🔴 价格偏高'
 
 def generate_html(data):
     """Generate HTML dashboard"""
@@ -78,15 +78,15 @@ def generate_html(data):
             
             purchases_html = f"""
             <div class="purchases-section">
-                <h4>Recent Purchases (Last 10)</h4>
+                <h4>近期买入记录（最近10次）</h4>
                 <div class="table-wrapper">
                     <table class="purchases-table">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>BTC Price</th>
-                                <th>BTC Bought</th>
-                                <th>USD Invested</th>
+                                <th>日期</th>
+                                <th>比特币价格</th>
+                                <th>买入数量</th>
+                                <th>投资金额</th>
                                 <th>AHR999</th>
                             </tr>
                         </thead>
@@ -96,46 +96,46 @@ def generate_html(data):
                     </table>
                 </div>
             </div>
-            """ if purchases_rows else '<p class="no-purchases">No purchases yet at this threshold.</p>'
+            """ if purchases_rows else '<p class="no-purchases">该阈值下暂无买入记录</p>'
         else:
-            purchases_html = '<p class="no-purchases">No purchases yet at this threshold.</p>'
+            purchases_html = '<p class="no-purchases">该阈值下暂无买入记录</p>'
         
         card = f"""
         <div class="investment-card">
             <div class="card-header">
                 <h3>AHR999 ≤ {threshold}</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, {get_ahr999_color(threshold)}, {get_ahr999_color(threshold)}88);">
-                    Threshold: {threshold}
+                <span class="threshold-badge" style="background: linear-gradient(135deg, {get_ahr999_color(threshold)}, {get_ahr999_color(threshold)}88); color: white;">
+                    阈值：{threshold}
                 </span>
             </div>
             <div class="card-stats">
                 <div class="stat-row">
                     <div class="stat">
-                        <span class="stat-label">Total Purchases</span>
+                        <span class="stat-label">买入次数</span>
                         <span class="stat-value">{s['purchase_count']}</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-label">Total Invested</span>
+                        <span class="stat-label">累计投资</span>
                         <span class="stat-value">${format_number(s['total_invested'])}</span>
                     </div>
                 </div>
                 <div class="stat-row">
                     <div class="stat">
-                        <span class="stat-label">Total BTC</span>
+                        <span class="stat-label">比特币总量</span>
                         <span class="stat-value">{format_btc(s['total_btc'])}</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-label">Current Value</span>
+                        <span class="stat-label">当前市值</span>
                         <span class="stat-value">${format_number(s['current_value'])}</span>
                     </div>
                 </div>
                 <div class="stat-row">
                     <div class="stat">
-                        <span class="stat-label">Profit/Loss</span>
+                        <span class="stat-label">盈亏</span>
                         <span class="stat-value" style="color: {roi_color}">${format_number(s['profit'])}</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-label">ROI</span>
+                        <span class="stat-label">投资回报率</span>
                         <span class="stat-value" style="color: {roi_color}; font-size: 1.5rem; font-weight: bold;">{format_number(s['roi'])}%</span>
                     </div>
                 </div>
@@ -146,11 +146,11 @@ def generate_html(data):
         investment_cards.append(card)
     
     html = f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin AHR999 Investment Dashboard</title>
+    <title>比特币 AHR999 投资仪表板</title>
     <style>
         * {{
             margin: 0;
@@ -159,9 +159,9 @@ def generate_html(data):
         }}
         
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #0f0f0f 100%);
-            color: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #FAFAFA;
+            color: #222222;
             min-height: 100vh;
             padding: 20px;
         }}
@@ -174,21 +174,22 @@ def generate_html(data):
         header {{
             text-align: center;
             padding: 40px 20px;
-            background: linear-gradient(135deg, #f7931a 0%, #ff6b00 100%);
+            background: #FFFFFF;
             border-radius: 20px;
             margin-bottom: 40px;
-            box-shadow: 0 10px 40px rgba(247, 147, 26, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #FF9900;
         }}
         
         h1 {{
             font-size: 3rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #1A1A1A;
         }}
         
         .subtitle {{
             font-size: 1.2rem;
-            opacity: 0.9;
+            color: #555555;
         }}
         
         .current-stats {{
@@ -199,33 +200,36 @@ def generate_html(data):
         }}
         
         .stat-card {{
-            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            background: #FFFFFF;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(247, 147, 26, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E0E0E0;
         }}
         
         .stat-card h2 {{
             font-size: 1rem;
-            color: #f7931a;
+            color: #FF9900;
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: 600;
         }}
         
         .stat-card .value {{
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 10px;
+            color: #1A1A1A;
         }}
         
         .stat-card .signal {{
             font-size: 1.1rem;
             padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
+            background: #FFF6E5;
             border-radius: 8px;
             margin-top: 10px;
+            color: #222222;
         }}
         
         .investment-grid {{
@@ -236,17 +240,17 @@ def generate_html(data):
         }}
         
         .investment-card {{
-            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            background: #FFFFFF;
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(247, 147, 26, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E0E0E0;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }}
         
         .investment-card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(247, 147, 26, 0.4);
+            box-shadow: 0 4px 16px rgba(255, 153, 0, 0.15);
         }}
         
         .card-header {{
@@ -255,12 +259,12 @@ def generate_html(data):
             align-items: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(247, 147, 26, 0.3);
+            border-bottom: 2px solid #FF9900;
         }}
         
         .card-header h3 {{
             font-size: 1.5rem;
-            color: #f7931a;
+            color: #FF9900;
         }}
         
         .threshold-badge {{
@@ -282,15 +286,16 @@ def generate_html(data):
         }}
         
         .stat {{
-            background: rgba(0, 0, 0, 0.3);
+            background: #FAFAFA;
             padding: 15px;
             border-radius: 10px;
+            border: 1px solid #E0E0E0;
         }}
         
         .stat-label {{
             display: block;
             font-size: 0.85rem;
-            color: #999;
+            color: #666666;
             margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -300,7 +305,7 @@ def generate_html(data):
             display: block;
             font-size: 1.3rem;
             font-weight: bold;
-            color: #f0f0f0;
+            color: #1A1A1A;
         }}
         
         .purchases-section {{
@@ -308,15 +313,17 @@ def generate_html(data):
         }}
         
         .purchases-section h4 {{
-            color: #f7931a;
+            color: #FF9900;
             margin-bottom: 15px;
             font-size: 1.1rem;
+            font-weight: 600;
         }}
         
         .table-wrapper {{
             overflow-x: auto;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
+            background: #FAFAFA;
+            border: 1px solid #E0E0E0;
         }}
         
         .purchases-table {{
@@ -328,40 +335,45 @@ def generate_html(data):
         .purchases-table td {{
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid rgba(247, 147, 26, 0.1);
+            border-bottom: 1px solid #E0E0E0;
         }}
         
         .purchases-table th {{
-            background: rgba(247, 147, 26, 0.2);
-            color: #f7931a;
+            background: #FFF6E5;
+            color: #FF9900;
             font-weight: bold;
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 1px;
         }}
         
+        .purchases-table td {{
+            color: #222222;
+        }}
+        
         .purchases-table tr:hover {{
-            background: rgba(247, 147, 26, 0.1);
+            background: #FFF6E5;
         }}
         
         .no-purchases {{
             text-align: center;
             padding: 20px;
-            color: #999;
+            color: #666666;
             font-style: italic;
         }}
         
         footer {{
             text-align: center;
             padding: 30px;
-            color: #999;
-            border-top: 1px solid rgba(247, 147, 26, 0.2);
+            color: #666666;
+            border-top: 1px solid #E0E0E0;
             margin-top: 40px;
         }}
         
         .last-updated {{
             font-size: 0.9rem;
-            color: #f7931a;
+            color: #FF9900;
+            font-weight: 600;
         }}
         
         @media (max-width: 768px) {{
@@ -382,33 +394,33 @@ def generate_html(data):
 <body>
     <div class="container">
         <header>
-            <h1>₿ Bitcoin AHR999 Dashboard</h1>
-            <p class="subtitle">Systematic Investment Strategy Based on AHR999 Index</p>
+            <h1>₿ 比特币 AHR999 投资仪表板</h1>
+            <p class="subtitle">基于 AHR999 指标的系统化投资策略</p>
         </header>
         
         <div class="current-stats">
             <div class="stat-card">
-                <h2>Current BTC Price</h2>
+                <h2>当前比特币价格</h2>
                 <div class="value">${format_number(current_price)}</div>
             </div>
             
             <div class="stat-card">
-                <h2>AHR999 Index</h2>
+                <h2>AHR999 指数</h2>
                 <div class="value" style="color: {ahr999_color}">
-                    {format_number(current_ahr999) if current_ahr999 else 'N/A'}
+                    {format_number(current_ahr999) if current_ahr999 else '不适用'}
                 </div>
                 <div class="signal">{ahr999_signal}</div>
             </div>
             
             <div class="stat-card">
-                <h2>Strategy Start Date</h2>
+                <h2>策略开始日期</h2>
                 <div class="value" style="font-size: 2rem;">{data['investment_start_date']}</div>
-                <div class="signal">$100 USD per buy signal</div>
+                <div class="signal">每次买入信号 $100 美元</div>
             </div>
         </div>
         
-        <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem; color: #f7931a;">
-            Investment Performance by Threshold
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem; color: #FF9900;">
+            各阈值投资表现
         </h2>
         
         <div class="investment-grid">
@@ -416,13 +428,13 @@ def generate_html(data):
         </div>
         
         <footer>
-            <p class="last-updated">Last Updated: {last_updated}</p>
-            <p style="margin-top: 10px;">
-                Data updates daily at 1:00 AM Beijing Time (UTC+8)
+            <p class="last-updated">最后更新时间：{last_updated}</p>
+            <p style="margin-top: 10px; color: #555555;">
+                数据每天北京时间凌晨 1:00 自动更新（UTC+8）
             </p>
-            <p style="margin-top: 20px; font-size: 0.85rem;">
-                AHR999 is an investment indicator for Bitcoin. Values ≤ 0.45 indicate excellent buying opportunities,
-                while values > 1.5 suggest the price may be overvalued.
+            <p style="margin-top: 20px; font-size: 0.85rem; color: #666666;">
+                AHR999 是比特币投资指标。数值 ≤ 0.45 表示极佳买入机会，
+                数值 > 1.5 表示价格可能偏高。
             </p>
         </footer>
     </div>
