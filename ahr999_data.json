@@ -1,17 +1,17 @@
 {
-  "last_updated": "2026-02-02 00:00:00",
-  "current_price": 79077.0,
-  "current_ahr999": 0.422716817790067,
+  "last_updated": "2026-02-03 00:00:00",
+  "current_price": 75085.0,
+  "current_ahr999": 0.3815619199804932,
   "investment_start_date": "2025-10-06",
   "summary": {
     "1.0": {
       "threshold": 1.0,
-      "purchase_count": 114,
-      "total_invested": 11400,
-      "total_btc": 0.12098223463508259,
-      "current_value": 9566.912168238427,
-      "profit": -1833.0878317615734,
-      "roi": -16.07971782246994,
+      "purchase_count": 115,
+      "total_invested": 11500,
+      "total_btc": 0.12231405856795867,
+      "current_value": 9183.951087575177,
+      "profit": -2316.0489124248234,
+      "roi": -20.139555760215856,
       "purchases": [
         {
           "date": "2025-10-12",
@@ -810,17 +810,24 @@
           "btc_bought": 0.0012645902095425978,
           "usd_invested": 100,
           "ahr999": 0.422716817790067
+        },
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
         }
       ]
     },
     "0.9": {
       "threshold": 0.9,
-      "purchase_count": 106,
-      "total_invested": 10600,
-      "total_btc": 0.11395937058356123,
-      "current_value": 9011.565147636271,
-      "profit": -1588.434852363729,
-      "roi": -14.985234456261596,
+      "purchase_count": 107,
+      "total_invested": 10700,
+      "total_btc": 0.11529119451643731,
+      "current_value": 8656.639340266694,
+      "profit": -2043.3606597333055,
+      "roi": -19.096828595638367,
       "purchases": [
         {
           "date": "2025-10-16",
@@ -1563,17 +1570,24 @@
           "btc_bought": 0.0012645902095425978,
           "usd_invested": 100,
           "ahr999": 0.422716817790067
+        },
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
         }
       ]
     },
     "0.8": {
       "threshold": 0.8,
-      "purchase_count": 91,
-      "total_invested": 9100,
-      "total_btc": 0.10023812369771337,
-      "current_value": 7926.53010764408,
-      "profit": -1173.46989235592,
-      "roi": -12.895273542372745,
+      "purchase_count": 92,
+      "total_invested": 9200,
+      "total_btc": 0.10156994763058945,
+      "current_value": 7626.379517842809,
+      "profit": -1573.620482157191,
+      "roi": -17.104570458230338,
       "purchases": [
         {
           "date": "2025-11-04",
@@ -2211,17 +2225,24 @@
           "btc_bought": 0.0012645902095425978,
           "usd_invested": 100,
           "ahr999": 0.422716817790067
+        },
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
         }
       ]
     },
     "0.7": {
       "threshold": 0.7,
-      "purchase_count": 81,
-      "total_invested": 8100,
-      "total_btc": 0.09052562605648144,
-      "current_value": 7158.494931668383,
-      "profit": -941.5050683316167,
-      "roi": -11.623519362118726,
+      "purchase_count": 82,
+      "total_invested": 8200,
+      "total_btc": 0.09185744998935752,
+      "current_value": 6897.1166324509095,
+      "profit": -1302.8833675490905,
+      "roi": -15.888821555476715,
       "purchases": [
         {
           "date": "2025-11-14",
@@ -2789,17 +2810,24 @@
           "btc_bought": 0.0012645902095425978,
           "usd_invested": 100,
           "ahr999": 0.422716817790067
+        },
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
         }
       ]
     },
     "0.6": {
       "threshold": 0.6,
-      "purchase_count": 70,
-      "total_invested": 7000,
-      "total_btc": 0.07905383092152271,
-      "current_value": 6251.339787781251,
-      "profit": -748.6602122187487,
-      "roi": -10.695145888839267,
+      "purchase_count": 71,
+      "total_invested": 7100,
+      "total_btc": 0.08038565485439879,
+      "current_value": 6035.756894742533,
+      "profit": -1064.2431052574666,
+      "roi": -14.989339510668543,
       "purchases": [
         {
           "date": "2025-11-19",
@@ -3290,17 +3318,24 @@
           "btc_bought": 0.0012645902095425978,
           "usd_invested": 100,
           "ahr999": 0.422716817790067
+        },
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
         }
       ]
     },
     "0.5": {
       "threshold": 0.5,
-      "purchase_count": 8,
-      "total_invested": 800,
-      "total_btc": 0.009734437812362886,
-      "current_value": 769.7701388882199,
-      "profit": -30.22986111178011,
-      "roi": -3.7787326389725138,
+      "purchase_count": 9,
+      "total_invested": 900,
+      "total_btc": 0.01106626174523896,
+      "current_value": 830.9102631412673,
+      "profit": -69.08973685873275,
+      "roi": -7.676637428748083,
       "purchases": [
         {
           "date": "2025-11-21",
@@ -3357,28 +3392,36 @@
           "btc_bought": 0.0012645902095425978,
           "usd_invested": 100,
           "ahr999": 0.422716817790067
+        },
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
         }
       ]
     },
     "0.4": {
       "threshold": 0.4,
-      "purchase_count": 0,
-      "total_invested": 0,
-      "total_btc": 0,
-      "current_value": 0.0,
+      "purchase_count": 1,
+      "total_invested": 100,
+      "total_btc": 0.0013318239328760737,
+      "current_value": 100.0,
       "profit": 0.0,
-      "roi": 0,
-      "purchases": []
+      "roi": 0.0,
+      "purchases": [
+        {
+          "date": "2026-02-03",
+          "price": 75085.0,
+          "btc_bought": 0.0013318239328760737,
+          "usd_invested": 100,
+          "ahr999": 0.3815619199804932
+        }
+      ]
     }
   },
   "ahr999_history": [
-    {
-      "date": "2025-02-03",
-      "price": 97568.0,
-      "ma_200d": 77876.5,
-      "ma_200w_fit": 100231.90077819438,
-      "ahr999": 1.2195578731812593
-    },
     {
       "date": "2025-02-04",
       "price": 101467.0,
@@ -5926,6 +5969,13 @@
       "ma_200d": 103891.335,
       "ma_200w_fit": 142387.3856472361,
       "ahr999": 0.422716817790067
+    },
+    {
+      "date": "2026-02-03",
+      "price": 75085.0,
+      "ma_200d": 103672.445,
+      "ma_200w_fit": 142520.7187036908,
+      "ahr999": 0.3815619199804932
     }
   ]
 }
