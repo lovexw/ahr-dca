@@ -1,203 +1,115 @@
-# Bitcoin AHR999 Investment Dashboard
+# ₿ AHR999 定投仪表盘
 
-[![Update BTC Price and AHR999 Dashboard](https://github.com/[YOUR-USERNAME]/[YOUR-REPO]/actions/workflows/update-btc-price.yml/badge.svg)](https://github.com/[YOUR-USERNAME]/[YOUR-REPO]/actions/workflows/update-btc-price.yml)
+[![Update BTC Price and AHR999 Dashboard](https://github.com/lovexw/ahr-dca/actions/workflows/update-btc-price.yml/badge.svg)](https://github.com/lovexw/ahr-dca/actions/workflows/update-btc-price.yml)
 
-A comprehensive Bitcoin investment tracking dashboard based on the AHR999 index, featuring automated daily price updates and multi-threshold investment strategy analysis.
+**在线访问：<https://dca.btchao.com>**
 
-## 🎯 Features
+基于 AHR999 指数的比特币定投（DCA）仪表盘：实时指数与区间信号、多阈值策略回测、可交互定投模拟器，全部计算在浏览器本地完成，数据每日由 GitHub Actions 自动更新。
 
-- **Automated Daily Updates**: GitHub Actions automatically fetches and updates Bitcoin prices daily at 1:00 AM Beijing Time (UTC+8)
-- **AHR999 Index Calculation**: Real-time calculation of the AHR999 investment indicator
-- **Multi-Threshold Strategy**: Tracks investment performance across 7 different AHR999 thresholds (≤1.0, ≤0.9, ≤0.8, ≤0.7, ≤0.6, ≤0.5, ≤0.4)
-- **Detailed Analytics**: Comprehensive tracking of investments, returns, and performance metrics
-- **Beautiful Dashboard**: Elegant Bitcoin-themed UI with real-time data visualization
-- **Historical Data**: Complete Bitcoin price history from 2013-04-28 to present
+## ✨ 功能
 
-## 📊 What is AHR999?
+- **实时指数**：BTC 价格、AHR999 指数（含区间定位）、200 日定投成本、指数增长估值、今日各阈值触发信号
+- **历史走势**：价格 / 定投成本 / 指数估值（对数坐标可选）+ AHR999 区间着色子图，支持 1/3/5 年与全区间切换、自由缩放
+- **阈值策略回测**：7 档阈值（≤1.0 ~ ≤0.4）各自"每日 $100"的收益对比，可排序，点击查看全部买入记录与资产曲线
+- **定投模拟器**：自定义金额与时间范围，支持 4 种模式（AHR999 阈值 / 每月固定日 / 均线条件 / 每日定投），实时重算，并给出与"每日定投"基准的超额收益、平均成本、最大回撤
+- **深浅色主题**、响应式布局、加载骨架与数字动画；图表库（ECharts）带三路 CDN 兜底，加载失败时表格与指标仍可用
 
-AHR999 is a popular Bitcoin investment indicator that combines:
-- 200-day moving average
-- 200-week moving average exponential fit
+## 📊 AHR999 是什么
 
-**Formula**: `AHR999 = (BTC Price / 200-day MA) × (BTC Price / 200-week MA fit)`
+AHR999 是社区广泛使用的比特币定投指标（[作者官方页面](https://ahr999.com)）：
 
-**Investment Signals**:
-- **≤ 0.45**: 🟢 Excellent buy zone
-- **0.45 - 0.7**: 🟢 Good buy zone
-- **0.7 - 1.0**: 🟡 Moderate buy
-- **1.0 - 1.5**: 🟠 Hold
-- **> 1.5**: 🔴 Overvalued
+```
+AHR999 = (比特币价格 / 200日定投成本) × (比特币价格 / 指数增长估值)
+```
 
-## 🚀 Investment Strategy
+- **200 日定投成本**：过去 200 天每天定投 $1 的平均持仓成本 `= 200 / Σ(1/pᵢ)`（注意不是 200 日均线）
+- **指数增长估值**：`10^(5.84 × log₁₀(币龄) − 17.01)`，币龄自创世区块（2009-01-03）起算，创世当日为第 1 天
 
-Starting from **October 6, 2025**, the system automatically tracks hypothetical $100 USD investments when AHR999 falls below various thresholds. This allows comparison of different entry strategies:
+**区间含义**：
 
-| Threshold | Strategy | Risk Level |
-|-----------|----------|------------|
-| ≤ 1.0 | Conservative | Low |
-| ≤ 0.9 | Moderate | Medium |
-| ≤ 0.8 | Aggressive | Medium-High |
-| ≤ 0.7 | Very Aggressive | High |
-| ≤ 0.6 | Extreme | Very High |
-| ≤ 0.5 | Ultra Aggressive | Extreme |
-| ≤ 0.4 | Maximum Risk | Maximum |
+| 区间 | 含义 |
+|------|------|
+| AHR999 < 0.45 | 🟢 抄底区（历史上仅约 8.5% 的时间） |
+| 0.45 ≤ AHR999 ≤ 1.2 | 🟠 定投区（约 46.3% 的时间） |
+| AHR999 > 1.2 | 🔴 等待区，价格偏贵 |
 
-## 📁 Project Structure
+## 🚀 阈值策略回测
+
+自 **2025-10-06** 起，系统回测 7 档阈值策略：当日 AHR999 ≤ 阈值即买入 $100，各策略独立记账，用于对比不同严格程度的买点选择：
+
+| 阈值 | 风格 |
+|------|------|
+| ≤ 1.0 | 宽松：整个定投区都买 |
+| ≤ 0.9 ~ ≤ 0.6 | 逐步收紧，只在更深回调时买 |
+| ≤ 0.5 / ≤ 0.4 | 极严格：只在深度低估时买 |
+
+## 🏗 架构
 
 ```
 .
-├── btc-price all.csv           # Historical Bitcoin price data (2013-present)
-├── update_btc_price.py         # Script to fetch and update BTC price
-├── calculate_ahr999.py         # AHR999 calculation and investment tracking
-├── generate_dashboard.py       # HTML dashboard generator
-├── ahr999_data.json           # Generated investment data (auto-updated)
-├── index.html                 # Dashboard webpage (auto-updated)
-├── .github/
-│   └── workflows/
-│       └── update-btc-price.yml  # GitHub Actions workflow
-└── README.md
+├── index.html                        # 前端单页应用（静态，无构建步骤）
+├── assets/
+│   ├── styles.css                    # 设计系统（深/浅主题）
+│   └── app.js                        # 数据加载、公式、图表与模拟器逻辑
+├── update_btc_price.py               # 抓取当日价格 + 回填近一年缺口（多数据源容错）
+├── calculate_ahr999.py               # 计算 AHR999 全量历史 + 各阈值回测 → ahr999_data.json
+├── ahr999_data.json                  # 前端数据（全量历史 + 汇总，约 400KB）
+├── btc-price all.csv                 # 每日价格源（2013-04-28 至今，无价格时前端可回退此文件计算）
+├── .github/workflows/update-btc-price.yml
+├── README.md / SETUP.md
 ```
 
-## 🔧 How It Works
+数据流：**GitHub Actions（每日 17:00 UTC = 北京时间 01:00）→ 抓价格 & 回填缺口 → 计算 AHR999 与回测 → 提交 JSON/CSV → 部署静态站**。
 
-### 1. Daily Price Update
-Every day at 1:00 AM Beijing Time, the GitHub Actions workflow:
-1. Fetches current Bitcoin price from CoinGecko API (with CoinCap fallback)
-2. Updates `btc-price all.csv` with the new price
-3. Commits changes to the repository
+前端优先加载 `ahr999_data.json`；若不可用（如在别的仓库部署），自动回退为解析同目录 `btc-price all.csv` 并在浏览器内用同一套公式计算，保证任何静态托管下都能工作。
 
-### 2. AHR999 Calculation
-The system calculates:
-- 200-day moving average from historical prices
-- 200-week MA exponential fit: `10^(5.84 × log10(days_since_genesis) - 17.01)`
-- AHR999 index for each day
-
-### 3. Investment Tracking
-For each threshold, the system tracks:
-- Number of purchases made
-- Total USD invested
-- Total BTC accumulated
-- Current portfolio value
-- Profit/loss and ROI percentage
-- Detailed purchase history
-
-### 4. Dashboard Generation
-Creates a beautiful, responsive HTML dashboard showing:
-- Current Bitcoin price
-- Current AHR999 index with color-coded signals
-- Investment performance for all thresholds
-- Recent purchase history
-- Real-time ROI calculations
-
-## 🌐 View the Dashboard
-
-The dashboard is automatically deployed to GitHub Pages after each update.
-
-**Live Dashboard**: `https://[YOUR-USERNAME].github.io/[YOUR-REPO]/`
-
-## 🛠️ Setup Instructions
-
-### Prerequisites
-- Python 3.11+
-- Git
-- GitHub account
-
-### Installation
-
-1. **Fork or clone this repository**
-
-2. **Enable GitHub Actions**
-   - Go to repository Settings → Actions → General
-   - Enable "Read and write permissions" for workflows
-
-3. **Enable GitHub Pages**
-   - Go to Settings → Pages
-   - Source: GitHub Actions
-   - Save
-
-4. **Manual trigger (optional)**
-   - Go to Actions → Update BTC Price and AHR999 Dashboard
-   - Click "Run workflow"
-
-### Local Testing
+## 🛠 本地运行
 
 ```bash
-# Install dependencies
-pip install requests
+pip install -r requirements.txt
 
-# Update Bitcoin price
-python update_btc_price.py
+python update_btc_price.py    # 更新价格（含缺口回填）
+python calculate_ahr999.py    # 重新计算 AHR999 与回测
 
-# Calculate AHR999 and investment data
-python calculate_ahr999.py
-
-# Generate dashboard
-python generate_dashboard.py
-
-# Open index.html in browser
+# 前端需要 HTTP 服务（fetch 不支持 file:// 协议）
+python3 -m http.server 8000
+# 打开 http://localhost:8000/
 ```
 
-## 📈 Data Sources
+## 🌐 部署
 
-- **Bitcoin Prices**: 
-  - Primary: [CoinGecko API](https://www.coingecko.com/en/api)
-  - Fallback: [CoinCap API](https://coincap.io/)
-- **Historical Data**: Pre-loaded from 2013-04-28 to 2025-11-20
-- **AHR999 Formula**: Based on Bitcoin community standard
+- **GitHub Pages**：仓库已内置工作流，每日自动构建 `dist/` 并部署（Settings → Pages → Source: GitHub Actions）。
+- **自定义域名（如 dca.btchao.com）**：可接入 Cloudflare Pages 等静态托管，指向仓库根目录即可；站点完全自包含（HTML + 资产 + 数据），无需构建环境。
 
-## 🔄 Update Schedule
+## 📈 数据来源
 
-- **Automated Updates**: Daily at 1:00 AM Beijing Time (17:00 UTC)
-- **Manual Updates**: Can be triggered anytime via GitHub Actions
-- **Data Persistence**: All updates are committed to the repository
+- **当日价格**：CoinGecko → Coinbase → Bitstamp（三源自动容错）
+- **缺口回填**：CoinGecko 历史区间 API（近 365 天内缺失日期自动补齐）
+- **历史数据**：2013-04-28 起的每日价格快照（UTC 日期标记）
 
-## 📊 Dashboard Features
+## 🔄 更新频率
 
-### Current Statistics
-- Real-time Bitcoin price
-- Current AHR999 index with color-coded signals
-- Investment strategy start date
+- 每日北京时间 01:00 自动更新（可在 workflow 中修改 cron）
+- 支持在 Actions 页面手动触发
 
-### Investment Cards (per threshold)
-- Total purchases made
-- Total amount invested (USD)
-- Total Bitcoin accumulated
-- Current portfolio value
-- Profit/Loss amount
-- Return on Investment (ROI %)
-- Recent purchase history (last 10 transactions)
+## 🤝 贡献
 
-### Visual Design
-- Bitcoin-themed orange and black color scheme
-- Responsive layout for mobile and desktop
-- Hover effects and smooth animations
-- Color-coded AHR999 signals
-- Professional financial dashboard aesthetic
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-- Report bugs
-- Suggest new features
-- Submit pull requests
-- Improve documentation
+欢迎提 Issue 与 PR：报错、建议、改进文档、优化前端交互均可。
 
 ## 📝 License
 
-This project is open source and available under the MIT License.
+MIT
 
-## ⚠️ Disclaimer
+## ⚠️ 免责声明
 
-This dashboard is for educational and informational purposes only. It does not constitute financial advice. Past performance does not guarantee future results. Always do your own research before making investment decisions.
+本站仅供学习与信息参考，不构成任何投资建议。历史表现不代表未来收益，投资有风险，决策需谨慎（DYOR）。
 
-## 🙏 Credits
+## 🔗 相关站点
 
-- AHR999 indicator concept by the Bitcoin community
-- Historical price data aggregated from multiple sources
-- Built with Python, GitHub Actions, and pure HTML/CSS
+- **比特囤币主站**：<https://www.btchao.com> —— 比特币导航与工具集（链上查询、汇率、白皮书、冷钱包教程、AHR999 定投指数等）
+- 小吴乐意：<https://www.xiaowuleyi.com/>
+- GitHub：<https://github.com/lovexw/ahr-dca>
 
 ---
 
-**Last Updated**: Auto-updated daily by GitHub Actions
-
-**Star ⭐ this repository if you find it useful!**
+⭐ 如果这个项目对你有帮助，欢迎 Star！

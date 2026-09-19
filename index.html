@@ -1,1289 +1,386 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>比特币 AHR999 投资仪表板</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background-color: #FAFAFA;
-            color: #222222;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            background: #FFFFFF;
-            border-radius: 16px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 2px solid #FF9900;
-        }
-        
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            color: #1A1A1A;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #555555;
-        }
-        
-        .current-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .stat-card {
-            background: #FFFFFF;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E0E0E0;
-        }
-        
-        .stat-card h2 {
-            font-size: 1rem;
-            color: #FF9900;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-        
-        .stat-card .value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #1A1A1A;
-        }
-        
-        .stat-card .signal {
-            font-size: 1.1rem;
-            padding: 10px;
-            background: #FFF6E5;
-            border-radius: 8px;
-            margin-top: 10px;
-            color: #1A1A1A;
-        }
-        
-        .investment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .investment-card {
-            background: #FFFFFF;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E0E0E0;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .investment-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 16px rgba(255, 153, 0, 0.12);
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #FF9900;
-        }
-        
-        .card-header h3 {
-            font-size: 1.5rem;
-            color: #FF9900;
-        }
-        
-        .threshold-badge {
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        
-        .card-stats {
-            margin-bottom: 25px;
-        }
-        
-        .stat-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .stat {
-            background: #FAFAFA;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #E0E0E0;
-        }
-        
-        .stat-label {
-            display: block;
-            font-size: 0.85rem;
-            color: #666666;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .stat-value {
-            display: block;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #1A1A1A;
-        }
-        
-        .purchases-section {
-            margin-top: 20px;
-        }
-        
-        .purchases-section h4 {
-            color: #FF9900;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-            background: #FAFAFA;
-            border: 1px solid #E0E0E0;
-        }
-        
-        .purchases-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .purchases-table th,
-        .purchases-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #E0E0E0;
-        }
-        
-        .purchases-table th {
-            background: #FFF6E5;
-            color: #FF9900;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-        
-        .purchases-table td {
-            color: #1A1A1A;
-        }
-        
-        .purchases-table tr:hover {
-            background: #FFF6E5;
-        }
-        
-        .no-purchases {
-            text-align: center;
-            padding: 20px;
-            color: #666666;
-            font-style: italic;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #666666;
-            border-top: 1px solid #E0E0E0;
-            margin-top: 40px;
-        }
-        
-        .last-updated {
-            font-size: 0.9rem;
-            color: #FF9900;
-            font-weight: 600;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .investment-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stat-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f5f6f9">
+<title>AHR999 定投仪表盘 · 比特囤币</title>
+<meta name="description" content="基于官方公式的 AHR999 比特币定投指数：实时指数、区间信号、多阈值策略回测与可交互定投模拟器。数据每日自动更新。">
+<meta property="og:title" content="AHR999 定投仪表盘 · 比特囤币">
+<meta property="og:description" content="AHR999 指数实时查询 · 多阈值策略回测 · 可交互定投模拟器">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23f7931a'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23fff' font-family='Arial' font-weight='bold'%3E%E2%82%BF%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./assets/styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>₿ 比特币 AHR999 投资仪表板</h1>
-            <p class="subtitle">基于 AHR999 指标的系统化投资策略</p>
-        </header>
-        
-        <div class="current-stats">
-            <div class="stat-card">
-                <h2>当前比特币价格</h2>
-                <div class="value">$81,167.00</div>
-            </div>
-            
-            <div class="stat-card">
-                <h2>AHR999 指数</h2>
-                <div class="value" style="color: #43A047">
-                    0.53
-                </div>
-                <div class="signal">🟢 良好买入区</div>
-            </div>
-            
-            <div class="stat-card">
-                <h2>策略开始日期</h2>
-                <div class="value" style="font-size: 2rem;">2025-10-06</div>
-                <div class="signal">每次买入信号 $100 美元</div>
-            </div>
-        </div>
-        
-        <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem; color: #FF9900;">
-            各阈值投资表现
-        </h2>
-        
-        <div class="investment-grid">
-            
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 1.0</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #FF9900, #FF990088); color: white;">
-                    阈值：1.0
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">340</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$34,000.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.44605858</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$36,205.24</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$2,205.24</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">6.49%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-09-18</td>
-                    <td>$81,167.00</td>
-                    <td>0.00123203 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5334</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-17</td>
-                    <td>$76,551.00</td>
-                    <td>0.00130632 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4754</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-16</td>
-                    <td>$75,988.00</td>
-                    <td>0.00131600 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4693</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-15</td>
-                    <td>$75,976.00</td>
-                    <td>0.00131621 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4699</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-14</td>
-                    <td>$79,377.00</td>
-                    <td>0.00125981 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5136</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-13</td>
-                    <td>$77,366.00</td>
-                    <td>0.00129256 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4889</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-12</td>
-                    <td>$77,159.00</td>
-                    <td>0.00129603 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4871</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-11</td>
-                    <td>$77,132.00</td>
-                    <td>0.00129648 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4876</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-10</td>
-                    <td>$77,124.00</td>
-                    <td>0.00129661 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4882</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-09</td>
-                    <td>$78,523.00</td>
-                    <td>0.00127351 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5069</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 0.9</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #FF9900, #FF990088); color: white;">
-                    阈值：0.9
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">332</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$33,200.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.43903572</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$35,635.21</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$2,435.21</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">7.33%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-09-18</td>
-                    <td>$81,167.00</td>
-                    <td>0.00123203 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5334</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-17</td>
-                    <td>$76,551.00</td>
-                    <td>0.00130632 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4754</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-16</td>
-                    <td>$75,988.00</td>
-                    <td>0.00131600 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4693</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-15</td>
-                    <td>$75,976.00</td>
-                    <td>0.00131621 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4699</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-14</td>
-                    <td>$79,377.00</td>
-                    <td>0.00125981 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5136</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-13</td>
-                    <td>$77,366.00</td>
-                    <td>0.00129256 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4889</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-12</td>
-                    <td>$77,159.00</td>
-                    <td>0.00129603 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4871</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-11</td>
-                    <td>$77,132.00</td>
-                    <td>0.00129648 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4876</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-10</td>
-                    <td>$77,124.00</td>
-                    <td>0.00129661 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4882</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-09</td>
-                    <td>$78,523.00</td>
-                    <td>0.00127351 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5069</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 0.8</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #FF9900, #FF990088); color: white;">
-                    阈值：0.8
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">317</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$31,700.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.42531447</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$34,521.50</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$2,821.50</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">8.90%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-09-18</td>
-                    <td>$81,167.00</td>
-                    <td>0.00123203 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5334</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-17</td>
-                    <td>$76,551.00</td>
-                    <td>0.00130632 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4754</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-16</td>
-                    <td>$75,988.00</td>
-                    <td>0.00131600 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4693</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-15</td>
-                    <td>$75,976.00</td>
-                    <td>0.00131621 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4699</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-14</td>
-                    <td>$79,377.00</td>
-                    <td>0.00125981 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5136</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-13</td>
-                    <td>$77,366.00</td>
-                    <td>0.00129256 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4889</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-12</td>
-                    <td>$77,159.00</td>
-                    <td>0.00129603 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4871</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-11</td>
-                    <td>$77,132.00</td>
-                    <td>0.00129648 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4876</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-10</td>
-                    <td>$77,124.00</td>
-                    <td>0.00129661 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4882</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-09</td>
-                    <td>$78,523.00</td>
-                    <td>0.00127351 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5069</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 0.7</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #43A047, #43A04788); color: white;">
-                    阈值：0.7
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">307</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$30,700.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.41560197</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$33,733.17</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$3,033.17</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">9.88%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-09-18</td>
-                    <td>$81,167.00</td>
-                    <td>0.00123203 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5334</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-17</td>
-                    <td>$76,551.00</td>
-                    <td>0.00130632 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4754</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-16</td>
-                    <td>$75,988.00</td>
-                    <td>0.00131600 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4693</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-15</td>
-                    <td>$75,976.00</td>
-                    <td>0.00131621 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4699</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-14</td>
-                    <td>$79,377.00</td>
-                    <td>0.00125981 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5136</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-13</td>
-                    <td>$77,366.00</td>
-                    <td>0.00129256 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4889</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-12</td>
-                    <td>$77,159.00</td>
-                    <td>0.00129603 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4871</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-11</td>
-                    <td>$77,132.00</td>
-                    <td>0.00129648 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4876</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-10</td>
-                    <td>$77,124.00</td>
-                    <td>0.00129661 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4882</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-09</td>
-                    <td>$78,523.00</td>
-                    <td>0.00127351 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5069</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 0.6</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #43A047, #43A04788); color: white;">
-                    阈值：0.6
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">296</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$29,600.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.40413018</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$32,802.03</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$3,202.03</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">10.82%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-09-18</td>
-                    <td>$81,167.00</td>
-                    <td>0.00123203 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5334</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-17</td>
-                    <td>$76,551.00</td>
-                    <td>0.00130632 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4754</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-16</td>
-                    <td>$75,988.00</td>
-                    <td>0.00131600 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4693</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-15</td>
-                    <td>$75,976.00</td>
-                    <td>0.00131621 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4699</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-14</td>
-                    <td>$79,377.00</td>
-                    <td>0.00125981 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5136</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-13</td>
-                    <td>$77,366.00</td>
-                    <td>0.00129256 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4889</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-12</td>
-                    <td>$77,159.00</td>
-                    <td>0.00129603 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4871</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-11</td>
-                    <td>$77,132.00</td>
-                    <td>0.00129648 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4876</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-10</td>
-                    <td>$77,124.00</td>
-                    <td>0.00129661 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4882</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-09</td>
-                    <td>$78,523.00</td>
-                    <td>0.00127351 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.5069</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 0.5</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #43A047, #43A04788); color: white;">
-                    阈值：0.5
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">208</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$20,800.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.30217039</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$24,526.26</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$3,726.26</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">17.91%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-09-17</td>
-                    <td>$76,551.00</td>
-                    <td>0.00130632 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4754</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-16</td>
-                    <td>$75,988.00</td>
-                    <td>0.00131600 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4693</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-15</td>
-                    <td>$75,976.00</td>
-                    <td>0.00131621 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4699</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-13</td>
-                    <td>$77,366.00</td>
-                    <td>0.00129256 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4889</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-12</td>
-                    <td>$77,159.00</td>
-                    <td>0.00129603 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4871</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-11</td>
-                    <td>$77,132.00</td>
-                    <td>0.00129648 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4876</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-10</td>
-                    <td>$77,124.00</td>
-                    <td>0.00129661 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4882</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-02</td>
-                    <td>$77,136.00</td>
-                    <td>0.00129641 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4951</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-09-01</td>
-                    <td>$77,287.00</td>
-                    <td>0.00129388 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4979</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-20</td>
-                    <td>$72,569.00</td>
-                    <td>0.00137800 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.4462</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="investment-card">
-            <div class="card-header">
-                <h3>AHR999 ≤ 0.4</h3>
-                <span class="threshold-badge" style="background: linear-gradient(135deg, #2E7D32, #2E7D3288); color: white;">
-                    阈值：0.4
-                </span>
-            </div>
-            <div class="card-stats">
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">买入次数</span>
-                        <span class="stat-value">147</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">累计投资</span>
-                        <span class="stat-value">$14,700.00</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">比特币总量</span>
-                        <span class="stat-value">0.22318136</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">当前市值</span>
-                        <span class="stat-value">$18,114.96</span>
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat">
-                        <span class="stat-label">盈亏</span>
-                        <span class="stat-value" style="color: #2E7D32">$3,414.96</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">投资回报率</span>
-                        <span class="stat-value" style="color: #2E7D32; font-size: 1.5rem; font-weight: bold;">23.23%</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="purchases-section">
-                <h4>近期买入记录（最近10次）</h4>
-                <div class="table-wrapper">
-                    <table class="purchases-table">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>比特币价格</th>
-                                <th>买入数量</th>
-                                <th>投资金额</th>
-                                <th>AHR999</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                <tr>
-                    <td>2026-08-19</td>
-                    <td>$68,139.00</td>
-                    <td>0.00146759 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3935</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-18</td>
-                    <td>$64,735.00</td>
-                    <td>0.00154476 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3551</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-17</td>
-                    <td>$64,168.00</td>
-                    <td>0.00155841 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3487</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-16</td>
-                    <td>$63,176.00</td>
-                    <td>0.00158288 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3377</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-15</td>
-                    <td>$63,037.00</td>
-                    <td>0.00158637 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3360</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-14</td>
-                    <td>$63,027.00</td>
-                    <td>0.00158662 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3356</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-13</td>
-                    <td>$63,183.00</td>
-                    <td>0.00158270 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3369</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-12</td>
-                    <td>$63,456.00</td>
-                    <td>0.00157590 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3395</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-11</td>
-                    <td>$63,499.00</td>
-                    <td>0.00157483 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3396</td>
-                </tr>
-                
-                <tr>
-                    <td>2026-08-10</td>
-                    <td>$63,926.00</td>
-                    <td>0.00156431 BTC</td>
-                    <td>$100.00</td>
-                    <td>0.3439</td>
-                </tr>
-                
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
-        </div>
-        
-        <footer>
-            <p class="last-updated">最后更新时间：2026-09-18 00:00:00</p>
-            <p style="margin-top: 10px; color: #555555;">
-                数据每天北京时间凌晨 1:00 自动更新（UTC+8）
-            </p>
-            <p style="margin-top: 20px; font-size: 0.85rem; color: #666666;">
-                AHR999 是比特币投资指标。数值 ≤ 0.45 表示极佳买入机会，
-                数值 > 1.5 表示价格可能偏高。
-            </p>
-        </footer>
+<div id="bg-glow" aria-hidden="true"></div>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./">
+      <span class="brand-logo" aria-hidden="true">₿</span>
+      <span class="brand-text">AHR999 <em>定投仪表盘</em></span>
+    </a>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#overview">实时指数</a>
+      <a href="#trend">历史走势</a>
+      <a href="#strategy">阈值策略</a>
+      <a href="#simulator">定投模拟器</a>
+    </nav>
+    <div class="topbar-actions">
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="切换深浅色主题" title="切换主题">
+        <span class="theme-icon-dark">☾</span><span class="theme-icon-light">☀</span>
+      </button>
+      <a class="icon-btn" href="https://github.com/lovexw/ahr-dca" target="_blank" rel="noopener" aria-label="GitHub 仓库" title="GitHub 仓库">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
     </div>
+  </div>
+</header>
+
+<main>
+  <!-- ======================= 实时指数 ======================= -->
+  <section id="overview" class="section">
+    <div class="section-head">
+      <h2>实时指数</h2>
+      <p class="section-sub" id="data-meta">数据加载中…</p>
+    </div>
+    <div class="kpi-grid">
+      <article class="card kpi">
+        <div class="kpi-label">比特币价格</div>
+        <div class="kpi-value" id="kpi-price"><span class="skel"></span></div>
+        <div class="kpi-sub" id="kpi-price-sub"><span class="skel skel-sm"></span></div>
+      </article>
+      <article class="card kpi">
+        <div class="kpi-label">AHR999 指数</div>
+        <div class="kpi-value" id="kpi-ahr"><span class="skel"></span></div>
+        <div class="kpi-sub"><span id="kpi-zone" class="zone-chip">—</span></div>
+      </article>
+      <article class="card kpi">
+        <div class="kpi-label">200 日定投成本</div>
+        <div class="kpi-value" id="kpi-cost"><span class="skel"></span></div>
+        <div class="kpi-sub" id="kpi-cost-sub"><span class="skel skel-sm"></span></div>
+      </article>
+      <article class="card kpi">
+        <div class="kpi-label">指数增长估值</div>
+        <div class="kpi-value" id="kpi-fit"><span class="skel"></span></div>
+        <div class="kpi-sub" id="kpi-fit-sub"><span class="skel skel-sm"></span></div>
+      </article>
+    </div>
+
+    <article class="card signal-card">
+      <div class="signal-head">
+        <div>
+          <div class="kpi-label">今日定投信号</div>
+          <div class="signal-caption" id="signal-caption">—</div>
+        </div>
+        <div class="signal-chips" id="signal-chips" role="list" aria-label="各阈值今日触发状态"></div>
+      </div>
+      <div class="zone-scale" aria-hidden="true">
+        <div class="zone-seg z1" style="--w:22.5%"><span>抄底区</span></div>
+        <div class="zone-seg z2" style="--w:37.5%"><span>定投区</span></div>
+        <div class="zone-seg z3" style="--w:40%"><span>等待区</span></div>
+        <div class="zone-marker" id="zone-marker"><b id="zone-marker-val">—</b><i></i></div>
+      </div>
+      <div class="zone-ticks"><span>0</span><span>0.45</span><span>1.2</span><span>2.0</span></div>
+    </article>
+  </section>
+
+  <!-- ======================= 历史走势 ======================= -->
+  <section id="trend" class="section">
+    <div class="section-head">
+      <h2>历史走势</h2>
+      <p class="section-sub">价格 · 200 日定投成本 · 指数增长估值 · AHR999</p>
+    </div>
+    <article class="card chart-card">
+      <div class="chart-toolbar">
+        <div class="pill-group" id="range-group" role="group" aria-label="时间范围">
+          <button class="pill" data-range="1y" type="button">1 年</button>
+          <button class="pill active" data-range="3y" type="button">3 年</button>
+          <button class="pill" data-range="5y" type="button">5 年</button>
+          <button class="pill" data-range="all" type="button">全部</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="chip toggle active" data-series="price" type="button">价格</button>
+          <button class="chip toggle active" data-series="cost" type="button">定投成本</button>
+          <button class="chip toggle active" data-series="fit" type="button">指数估值</button>
+          <button class="chip toggle active" data-series="ahr" type="button">AHR999</button>
+          <button class="chip toggle active" id="log-toggle" type="button">对数坐标</button>
+        </div>
+      </div>
+      <div class="chart-box" id="main-chart">
+        <div class="chart-fallback">图表加载中…</div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ======================= 阈值策略 ======================= -->
+  <section id="strategy" class="section">
+    <div class="section-head">
+      <h2>阈值策略回测</h2>
+      <p class="section-sub" id="strategy-meta">—</p>
+    </div>
+    <div class="strategy-grid">
+      <article class="card chart-card">
+        <div class="card-title">累计回报率对比</div>
+        <div class="chart-box box-sm" id="roi-chart"><div class="chart-fallback">图表加载中…</div></div>
+      </article>
+      <article class="card table-card">
+        <div class="card-title">策略明细 <span class="hint-inline">点击行查看买入记录</span></div>
+        <div class="table-scroll">
+          <table class="data-table" id="strategy-table" aria-label="阈值策略明细">
+            <thead>
+              <tr>
+                <th data-key="threshold" class="sortable">阈值</th>
+                <th data-key="purchase_count" class="sortable num">次数</th>
+                <th data-key="total_invested" class="sortable num">投入</th>
+                <th data-key="total_btc" class="sortable num">持币</th>
+                <th data-key="avg_cost" class="sortable num">平均成本</th>
+                <th data-key="current_value" class="sortable num">市值</th>
+                <th data-key="profit" class="sortable num">盈亏</th>
+                <th data-key="roi" class="sortable num">回报率</th>
+              </tr>
+            </thead>
+            <tbody id="strategy-tbody">
+              <tr><td colspan="8" class="empty-row">数据加载中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ======================= 定投模拟器 ======================= -->
+  <section id="simulator" class="section">
+    <div class="section-head">
+      <h2>定投模拟器</h2>
+      <p class="section-sub">自定义策略实时回测 · 所有计算在浏览器本地完成</p>
+    </div>
+
+    <article class="card sim-controls">
+      <div class="sim-row">
+        <div class="field">
+          <label class="label" for="sim-amount">每次定投金额 (USD)</label>
+          <input id="sim-amount" type="number" min="1" step="1" value="100" inputmode="numeric">
+          <div class="field-presets" id="amount-presets">
+            <button class="chip preset" data-v="50" type="button">$50</button>
+            <button class="chip preset active" data-v="100" type="button">$100</button>
+            <button class="chip preset" data-v="500" type="button">$500</button>
+            <button class="chip preset" data-v="1000" type="button">$1000</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="sim-start">开始日期</label>
+          <input id="sim-start" type="date">
+        </div>
+        <div class="field">
+          <label class="label" for="sim-end">结束日期</label>
+          <input id="sim-end" type="date">
+        </div>
+        <div class="field range-presets">
+          <span class="label">快捷范围</span>
+          <div class="field-presets" id="range-presets">
+            <button class="chip preset" data-y="1" type="button">近 1 年</button>
+            <button class="chip preset" data-y="3" type="button">近 3 年</button>
+            <button class="chip preset" data-y="5" type="button">近 5 年</button>
+            <button class="chip preset" data-y="0" type="button">全部</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-modes" id="sim-modes" role="tablist" aria-label="定投模式">
+        <button class="mode-tab active" data-mode="ahr" role="tab" aria-selected="true" type="button">AHR999 阈值</button>
+        <button class="mode-tab" data-mode="monthly" role="tab" aria-selected="false" type="button">每月固定日</button>
+        <button class="mode-tab" data-mode="ma" role="tab" aria-selected="false" type="button">均线条件</button>
+        <button class="mode-tab" data-mode="daily" role="tab" aria-selected="false" type="button">每日定投</button>
+        <span class="mode-indicator" aria-hidden="true"></span>
+      </div>
+
+      <div class="mode-panel" id="panel-ahr">
+        <div class="sim-row">
+          <div class="field">
+            <label class="label" for="sim-threshold">AHR999 ≤ 阈值</label>
+            <select id="sim-threshold">
+              <option value="0.4">0.4（最严格）</option>
+              <option value="0.5">0.5</option>
+              <option value="0.6">0.6</option>
+              <option value="0.7">0.7</option>
+              <option value="0.8">0.8</option>
+              <option value="0.9">0.9</option>
+              <option value="1.0" selected>1.0（宽松）</option>
+              <option value="1.1">1.1</option>
+              <option value="1.2">1.2</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="sim-ahr-freq">买入频率</label>
+            <select id="sim-ahr-freq">
+              <option value="daily" selected>满足阈值的所有日期</option>
+              <option value="monthly">每月仅一次</option>
+            </select>
+          </div>
+          <p class="mode-hint">当日 AHR999 ≤ 阈值时触发买入；若选择"每月仅一次"而某月无达标日，则该月最后一天买入。</p>
+        </div>
+      </div>
+
+      <div class="mode-panel hidden" id="panel-monthly">
+        <div class="sim-row">
+          <div class="field">
+            <label class="label" for="sim-dom">每月买入日 <b id="sim-dom-val">1</b> 日</label>
+            <input id="sim-dom" type="range" min="1" max="28" value="1">
+          </div>
+          <p class="mode-hint">若当日无价格记录（节假日停更等），则顺延至当月最后有价格的日期。</p>
+        </div>
+      </div>
+
+      <div class="mode-panel hidden" id="panel-ma">
+        <div class="sim-row">
+          <div class="field">
+            <label class="label" for="sim-ma-window">均线窗口</label>
+            <select id="sim-ma-window">
+              <option value="50">50 日</option>
+              <option value="100">100 日</option>
+              <option value="200" selected>200 日</option>
+              <option value="350">350 日</option>
+              <option value="700">700 日</option>
+              <option value="1000">1000 日</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="sim-ma-op">触发条件</label>
+            <select id="sim-ma-op">
+              <option value="lte" selected>价格 ≤ 均线</option>
+              <option value="gte">价格 ≥ 均线</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="sim-ma-freq">买入频率</label>
+            <select id="sim-ma-freq">
+              <option value="daily" selected>满足条件的所有日期</option>
+              <option value="monthly">每月仅一次</option>
+            </select>
+          </div>
+          <p class="mode-hint">基于简单移动平均线（SMA）择时定投。</p>
+        </div>
+      </div>
+
+      <div class="mode-panel hidden" id="panel-daily">
+        <p class="mode-hint">区间内每个有价格记录的日期都定投一次，作为其他策略的业绩基准。</p>
+      </div>
+    </article>
+
+    <div class="sim-metrics" id="sim-metrics">
+      <article class="card kpi"><div class="kpi-label">总投入</div><div class="kpi-value" id="m-invested">—</div></article>
+      <article class="card kpi"><div class="kpi-label">期末价值</div><div class="kpi-value" id="m-value">—</div></article>
+      <article class="card kpi"><div class="kpi-label">累计收益</div><div class="kpi-value" id="m-profit">—</div><div class="kpi-sub" id="m-alpha">—</div></article>
+      <article class="card kpi"><div class="kpi-label">持币数量</div><div class="kpi-value" id="m-btc">—</div><div class="kpi-sub" id="m-avg-cost">—</div></article>
+      <article class="card kpi"><div class="kpi-label">买入次数</div><div class="kpi-value" id="m-count">—</div><div class="kpi-sub" id="m-mdd">—</div></article>
+    </div>
+
+    <article class="card chart-card">
+      <div class="card-title">资产曲线 <span class="hint-inline" id="sim-range-note">—</span></div>
+      <div class="chart-box" id="sim-chart"><div class="chart-fallback">图表加载中…</div></div>
+    </article>
+
+    <article class="card table-card">
+      <div class="card-title">买入明细 <span class="hint-inline" id="sim-table-note">—</span></div>
+      <div class="table-scroll box-scroll">
+        <table class="data-table" aria-label="模拟器买入明细">
+          <thead>
+            <tr><th>日期</th><th class="num">当时价格</th><th class="num">投入</th><th class="num">获得 BTC</th><th class="num">累计 BTC</th><th class="num">累计投入</th></tr>
+          </thead>
+          <tbody id="sim-tbody">
+            <tr><td colspan="6" class="empty-row">等待计算…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</main>
+
+<!-- ======================= 策略详情抽屉 ======================= -->
+<div class="drawer-overlay hidden" id="drawer-overlay"></div>
+<aside class="drawer hidden" id="drawer" role="dialog" aria-modal="true" aria-label="策略详情">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-title" id="drawer-title">—</div>
+      <div class="drawer-sub" id="drawer-sub">—</div>
+    </div>
+    <button class="icon-btn" id="drawer-close" type="button" aria-label="关闭详情">✕</button>
+  </div>
+  <div class="drawer-stats" id="drawer-stats"></div>
+  <div class="drawer-chart-wrap"><div class="chart-box box-sm" id="drawer-chart"></div></div>
+  <div class="drawer-table-title">全部买入记录 <span id="drawer-count" class="hint-inline"></span></div>
+  <div class="table-scroll drawer-scroll">
+    <table class="data-table" aria-label="买入记录">
+      <thead><tr><th>日期</th><th class="num">价格</th><th class="num">投入</th><th class="num">获得 BTC</th><th class="num">AHR999</th></tr></thead>
+      <tbody id="drawer-tbody"></tbody>
+    </table>
+  </div>
+</aside>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-logo small" aria-hidden="true">₿</span>
+        <div>
+          <b>AHR999 定投仪表盘</b>
+          <p>基于官方公式的比特币定投指数与回测工具，数据每日自动更新。</p>
+        </div>
+      </div>
+      <nav class="footer-cards" aria-label="相关站点">
+        <a class="fcard" href="https://www.btchao.com" target="_blank" rel="noopener">
+          <span class="fcard-icon" aria-hidden="true">₿</span>
+          <span class="fcard-text"><b>比特囤币主站</b><i>www.btchao.com</i></span>
+          <span class="fcard-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="fcard" href="https://github.com/lovexw/ahr-dca" target="_blank" rel="noopener">
+          <span class="fcard-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></span>
+          <span class="fcard-text"><b>GitHub 仓库</b><i>lovexw/ahr-dca</i></span>
+          <span class="fcard-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="fcard" href="https://www.xiaowuleyi.com/" target="_blank" rel="noopener">
+          <span class="fcard-icon" aria-hidden="true">乐</span>
+          <span class="fcard-text"><b>小吴乐意主页</b><i>www.xiaowuleyi.com</i></span>
+          <span class="fcard-arrow" aria-hidden="true">↗</span>
+        </a>
+      </nav>
+    </div>
+    <div class="footer-meta">
+      <span id="footer-updated">数据加载中…</span><span class="dot">·</span>
+      <span>每日 01:00（北京时间）自动更新</span><span class="dot">·</span>
+      <span>本站仅供学习参考，不构成任何投资建议</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+<script>
+/* ECharts loader with CDN fallback chain */
+(function () {
+  var urls = [
+    'https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js',
+    'https://unpkg.com/echarts@5.6.0/dist/echarts.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js'
+  ];
+  var i = 0;
+  function next() {
+    if (i >= urls.length) {
+      document.documentElement.classList.add('no-echarts');
+      window.dispatchEvent(new Event('echarts-failed'));
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = urls[i++];
+    s.async = false;
+    s.onload = function () { window.dispatchEvent(new Event('echarts-ready')); };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+</script>
+<script src="./assets/app.js" defer></script>
 </body>
 </html>
